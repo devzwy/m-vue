@@ -30,6 +30,32 @@ public class RuoYiConfig
     /** 获取地址开关 */
     private static boolean addressEnabled;
 
+    /**
+     * 游戏签名
+     */
+    private String gameAddress;
+
+    /**
+     * 游戏地址
+     */
+    private String gameSign;
+
+    public String getGameAddress() {
+        return gameAddress;
+    }
+
+    public void setGameAddress(String gameAddress) {
+        this.gameAddress = gameAddress;
+    }
+
+    public String getGameSign() {
+        return gameSign;
+    }
+
+    public void setGameSign(String gameSign) {
+        this.gameSign = gameSign;
+    }
+
     public String getName()
     {
         return name;

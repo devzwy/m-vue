@@ -5,10 +5,10 @@
 </template>
 <script>
 export default {
-  name: "Swagger",
+  name: "api-doc",
   data() {
     return {
-      src: process.env.VUE_APP_BASE_API + "/swagger-ui.html",
+      src: process.env.VUE_APP_BASE_API + "/doc.html",
       height: document.documentElement.clientHeight - 94.5 + "px;",
       loading: true
     };

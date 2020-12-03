@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.XyRoleMapper">
+    
+    <resultMap type="XyRole" id="XyRoleResult">
+        <result property="account"    column="account"    />
+        <result property="serverId"    column="server_id"    />
+        <result property="roleId"    column="role_id"    />
+        <result property="roleName"    column="role_name"    />
+        <result property="level"    column="level"    />
+        <result property="roleType"    column="role_type"    />
+        <result property="levelZs"    column="level_zs"    />
+    </resultMap>
+
+    <sql id="selectXyRoleVo">
+        select account, server_id, role_id, role_name, level, role_type, level_zs from xy_role
+    </sql>
+
+    <select id="selectXyRoleList" parameterType="XyRole" resultMap="XyRoleResult">
+        <include refid="selectXyRoleVo"/>
+        <where>  
+            <if test="account != null  and account != ''"> and account like concat('%', #{account}, '%')</if>
+            <if test="serverId != null "> and server_id = #{serverId}</if>
+            <if test="roleId != null "> and role_id = #{roleId}</if>
+            <if test="roleName != null  and roleName != ''"> and role_name like concat('%', #{roleName}, '%')</if>
+            <if test="level != null "> and level = #{level}</if>
+            <if test="roleType != null "> and role_type = #{roleType}</if>
+            <if test="levelZs != null "> and level_zs = #{levelZs}</if>
+        </where>
+    </select>
+    
+    <select id="selectXyRoleById" parameterType="String" resultMap="XyRoleResult">
+        <include refid="selectXyRoleVo"/>
+        where account = #{account}
+    </select>
+        
+    <insert id="insertXyRole" parameterType="XyRole">
+        insert into xy_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="account != null">account,</if>
+            <if test="serverId != null">server_id,</if>
+            <if test="roleId != null">role_id,</if>
+            <if test="roleName != null">role_name,</if>
+            <if test="level != null">level,</if>
+            <if test="roleType != null">role_type,</if>
+            <if test="levelZs != null">level_zs,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="account != null">#{account},</if>
+            <if test="serverId != null">#{serverId},</if>
+            <if test="roleId != null">#{roleId},</if>
+            <if test="roleName != null">#{roleName},</if>
+            <if test="level != null">#{level},</if>
+            <if test="roleType != null">#{roleType},</if>
+            <if test="levelZs != null">#{levelZs},</if>
+         </trim>
+    </insert>
+
+    <update id="updateXyRole" parameterType="XyRole">
+        update xy_role
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="serverId != null">server_id = #{serverId},</if>
+            <if test="roleId != null">role_id = #{roleId},</if>
+            <if test="roleName != null">role_name = #{roleName},</if>
+            <if test="level != null">level = #{level},</if>
+            <if test="roleType != null">role_type = #{roleType},</if>
+            <if test="levelZs != null">level_zs = #{levelZs},</if>
+        </trim>
+        where account = #{account}
+    </update>
+
+    <delete id="deleteXyRoleById" parameterType="String">
+        delete from xy_role where account = #{account}
+    </delete>
+
+    <delete id="deleteXyRoleByIds" parameterType="String">
+        delete from xy_role where account in 
+        <foreach item="account" collection="array" open="(" separator="," close=")">
+            #{account}
+        </foreach>
+    </delete>
+    
+</mapper>
