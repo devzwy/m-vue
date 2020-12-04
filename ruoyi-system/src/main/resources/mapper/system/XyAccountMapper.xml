@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.XyAccountMapper">
+    
+    <resultMap type="XyAccount" id="XyAccountResult">
+        <result property="account"    column="account"    />
+    </resultMap>
+
+    <sql id="selectXyAccountVo">
+        select account from xy_account
+    </sql>
+
+    <select id="selectXyAccountList" parameterType="XyAccount" resultMap="XyAccountResult">
+        <include refid="selectXyAccountVo"/>
+        <where>  
+            <if test="account != null  and account != ''"> and account = #{account}</if>
+        </where>
+    </select>
+    
+    <select id="selectXyAccountById" parameterType="String" resultMap="XyAccountResult">
+        <include refid="selectXyAccountVo"/>
+        where account = #{account}
+    </select>
+        
+    <insert id="insertXyAccount" parameterType="XyAccount">
+        insert into xy_account
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="account != null and account != ''">account,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="account != null and account != ''">#{account},</if>
+         </trim>
+    </insert>
+
+    <update id="updateXyAccount" parameterType="XyAccount">
+        update xy_account
+        <trim prefix="SET" suffixOverrides=",">
+        </trim>
+        where account = #{account}
+    </update>
+
+    <delete id="deleteXyAccountById" parameterType="String">
+        delete from xy_account where account = #{account}
+    </delete>
+
+    <delete id="deleteXyAccountByIds" parameterType="String">
+        delete from xy_account where account in 
+        <foreach item="account" collection="array" open="(" separator="," close=")">
+            #{account}
+        </foreach>
+    </delete>
+    
+</mapper>

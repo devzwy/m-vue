@@ -107,6 +107,19 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/xy_role',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'index',
+        component: (resolve) => require(['@/views/system/xy_role/index'], resolve),
+        name: 'XyRole',
+        meta: { title: '角色' }
+      }
+    ]
+  },
+  {
     path: '/gen',
     component: Layout,
     hidden: true,

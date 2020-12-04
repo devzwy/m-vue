@@ -6,18 +6,18 @@ import com.ruoyi.system.domain.XyRole;
 /**
  * 西游角色Mapper接口
  * 
- * @author Jason
- * @date 2020-12-03
+ * @author ruoyi
+ * @date 2020-12-04
  */
 public interface XyRoleMapper 
 {
     /**
      * 查询西游角色
      * 
-     * @param account 西游角色ID
+     * @param xyRoleId 西游角色ID
      * @return 西游角色
      */
-    public XyRole selectXyRoleById(String account);
+    public XyRole selectXyRoleById(String xyRoleId);
 
     /**
      * 查询西游角色列表
@@ -46,16 +46,16 @@ public interface XyRoleMapper
     /**
      * 删除西游角色
      * 
-     * @param account 西游角色ID
+     * @param xyRoleId 西游角色ID
      * @return 结果
      */
-    public int deleteXyRoleById(String account);
+    public int deleteXyRoleById(String xyRoleId);
 
     /**
      * 批量删除西游角色
      * 
-     * @param accounts 需要删除的数据ID
+     * @param xyRoleIds 需要删除的数据ID
      * @return 结果
      */
-    public int deleteXyRoleByIds(String[] accounts);
+    public int deleteXyRoleByIds(String[] xyRoleIds);
 }

@@ -1,4 +1,4 @@
-package com.ruoyi.web.controller.tool;
+package com.ruoyi.common.utils;
 
 import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.common.utils.StringUtils;

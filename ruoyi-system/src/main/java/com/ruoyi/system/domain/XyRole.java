@@ -8,115 +8,144 @@ import com.ruoyi.common.core.domain.BaseEntity;
 /**
  * 西游角色对象 xy_role
  * 
- * @author Jason
- * @date 2020-12-03
+ * @author ruoyi
+ * @date 2020-12-04
  */
 public class XyRole extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-    /** 角色账号 */
-    @Excel(name = "角色账号")
-    private String account;
-
-    /** 服务区组ID */
-    @Excel(name = "服务区组ID")
-    private Long serverId;
-
     /** 角色ID */
-    @Excel(name = "角色ID")
-    private Long roleId;
+    private String xyRoleId;
 
     /** 角色名称 */
     @Excel(name = "角色名称")
-    private String roleName;
-
-    /** 角色等级 */
-    @Excel(name = "角色等级")
-    private Long level;
+    private String xyRoleName;
 
     /** 角色类型 */
     @Excel(name = "角色类型")
-    private Long roleType;
+    private Long xyRoleType;
 
-    /** 转生等级 */
-    @Excel(name = "转生等级")
-    private Long levelZs;
+    /** 角色等级 */
+    @Excel(name = "角色等级")
+    private Long xyRoleLevel;
 
-    public void setAccount(String account) 
-    {
-        this.account = account;
-    }
+    /** 角色转生等级 */
+    @Excel(name = "角色转生等级")
+    private Long xyRoleLevelZs;
 
-    public String getAccount() 
-    {
-        return account;
-    }
-    public void setServerId(Long serverId) 
-    {
-        this.serverId = serverId;
-    }
+    /** 角色账号 */
+    @Excel(name = "角色账号")
+    private String xyAccount;
 
-    public Long getServerId() 
-    {
-        return serverId;
-    }
-    public void setRoleId(Long roleId) 
-    {
-        this.roleId = roleId;
+    private String p1;
+
+    private String p2;
+
+    private String p3;
+
+    private String p4;
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 
-    public Long getRoleId() 
-    {
-        return roleId;
-    }
-    public void setRoleName(String roleName) 
-    {
-        this.roleName = roleName;
+    public String getP1() {
+        return p1;
     }
 
-    public String getRoleName() 
-    {
-        return roleName;
-    }
-    public void setLevel(Long level) 
-    {
-        this.level = level;
+    public void setP1(String p1) {
+        this.p1 = p1;
     }
 
-    public Long getLevel() 
-    {
-        return level;
-    }
-    public void setRoleType(Long roleType) 
-    {
-        this.roleType = roleType;
+    public String getP2() {
+        return p2;
     }
 
-    public Long getRoleType() 
-    {
-        return roleType;
-    }
-    public void setLevelZs(Long levelZs) 
-    {
-        this.levelZs = levelZs;
+    public void setP2(String p2) {
+        this.p2 = p2;
     }
 
-    public Long getLevelZs() 
+    public String getP3() {
+        return p3;
+    }
+
+    public void setP3(String p3) {
+        this.p3 = p3;
+    }
+
+    public String getP4() {
+        return p4;
+    }
+
+    public void setP4(String p4) {
+        this.p4 = p4;
+    }
+
+    public void setXyRoleId(String xyRoleId)
     {
-        return levelZs;
+        this.xyRoleId = xyRoleId;
+    }
+
+    public String getXyRoleId() 
+    {
+        return xyRoleId;
+    }
+    public void setXyRoleName(String xyRoleName) 
+    {
+        this.xyRoleName = xyRoleName;
+    }
+
+    public String getXyRoleName() 
+    {
+        return xyRoleName;
+    }
+    public void setXyRoleType(Long xyRoleType)
+    {
+        this.xyRoleType = xyRoleType;
+    }
+
+    public Long getXyRoleType()
+    {
+        return xyRoleType;
+    }
+    public void setXyRoleLevel(Long xyRoleLevel) 
+    {
+        this.xyRoleLevel = xyRoleLevel;
+    }
+
+    public Long getXyRoleLevel() 
+    {
+        return xyRoleLevel;
+    }
+    public void setXyRoleLevelZs(Long xyRoleLevelZs) 
+    {
+        this.xyRoleLevelZs = xyRoleLevelZs;
+    }
+
+    public Long getXyRoleLevelZs() 
+    {
+        return xyRoleLevelZs;
+    }
+    public void setXyAccount(String xyAccount) 
+    {
+        this.xyAccount = xyAccount;
+    }
+
+    public String getXyAccount() 
+    {
+        return xyAccount;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("account", getAccount())
-            .append("serverId", getServerId())
-            .append("roleId", getRoleId())
-            .append("roleName", getRoleName())
-            .append("level", getLevel())
-            .append("roleType", getRoleType())
-            .append("levelZs", getLevelZs())
+            .append("xyRoleId", getXyRoleId())
+            .append("xyRoleName", getXyRoleName())
+            .append("xyRoleType", getXyRoleType())
+            .append("xyRoleLevel", getXyRoleLevel())
+            .append("xyRoleLevelZs", getXyRoleLevelZs())
+            .append("xyAccount", getXyAccount())
             .toString();
     }
 }
