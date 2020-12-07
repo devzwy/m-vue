@@ -137,6 +137,17 @@ public class XyRoleController extends BaseController {
     public AjaxResult addYbTC(@PathVariable Long xyRoleId, @PathVariable int giftId) {
         return toAjax(gmUtils.Recharge(1, String.valueOf(xyRoleId), giftId));
     }
+    /**
+     * 充值福利
+     */
+    @Log(title = "西游角色", businessType = BusinessType.ADDFuli)
+    @PutMapping("/addFuli/{xyRoleId}/{fuliId}")
+    public AjaxResult addFuli(@PathVariable Long xyRoleId, @PathVariable String fuliId) {
+        return toAjax(gmUtils.sendfanli(1, String.valueOf(xyRoleId), fuliId));
+    }
+
+
+
 
 
 

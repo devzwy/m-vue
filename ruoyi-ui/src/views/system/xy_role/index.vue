@@ -22,10 +22,9 @@
         >导出
         </el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="xy_roleList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="xy_roleList" center @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="角色账号" align="center" prop="xyAccount"/>
       <el-table-column label="角色ID" align="center" prop="xyRoleId"/>
@@ -35,6 +34,14 @@
       <el-table-column label="角色类型" align="center" prop="xyRoleType" :formatter="formatRoleType"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="sendItem(scope.row)"
+            v-hasPermi="['system:xy_item:edit']"
+          >发送物资
+          </el-button>
           <el-button
             size="mini"
             type="text"
@@ -105,7 +112,7 @@
     />
 
     <!-- 添加或修改西游角色对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" center width="500px" center append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="角色名称:" prop="xyRoleName">
           <label>{{ form.xyRoleName }}</label>
@@ -145,7 +152,7 @@
     </el-dialog>
 
     <!-- 禁言对话框 -->
-    <el-dialog :title="title" :visible.sync="banMsgInfo.open" width="500px" append-to-body>
+    <el-dialog :title="title" :visible.sync="banMsgInfo.open" center width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules">
 
         <el-form-item label="禁言时长(单位秒)" prop="xyRoleLevelZs">
@@ -160,7 +167,7 @@
     </el-dialog>
 
     <!-- fenghao对话框 -->
-    <el-dialog :title="title" :visible.sync="banRoleParam.open" width="500px" append-to-body>
+    <el-dialog :title="title" :visible.sync="banRoleParam.open" center width="500px" append-to-body>
       <label>状态：
         <el-select v-model="banRoleParam.banType">
           <el-option value="封禁">封禁</el-option>
@@ -175,7 +182,7 @@
 
 
     <!-- 充值元宝对话框 -->
-    <el-dialog :title="title" :visible.sync="addYB.open" width="500px" append-to-body>
+    <el-dialog :title="title" :visible.sync="addYB.open" center width="500px" append-to-body>
       <el-input v-model="addYB.number" placeholder="0"/>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="banSendYB">确 定</el-button>
@@ -199,6 +206,92 @@
         <el-button @click="cancelDialog">取 消</el-button>
       </div>
     </el-dialog>
+    <!--   福利套餐选择-->
+    <el-dialog :title="title" :visible.sync="addFuli.open" center width="500px" append-to-body>
+      <el-select style="width: 100%" v-model="addFuli.selectedfuli" placeholder="选择套餐" clearable size="small">
+        <el-option
+          v-for="dict in addFuli.fuliOptions"
+          :key="dict.dictValue"
+          :label="dict.dictLabel"
+          :value="dict.dictValue"
+        />
+      </el-select>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="banSendFuli">确 定</el-button>
+        <el-button @click="cancelDialog">取 消</el-button>
+      </div>
+    </el-dialog>
+
+
+    <!--   发送物资-->
+    <el-dialog :title="title" :visible.sync="sendItemParam.open" center width="70%" append-to-body>
+
+      <el-form :model="sendItemParam.queryParams" ref="sendItemParam.queryForm" :inline="true" label-width="68px">
+        <el-form-item label="物资ID" prop="itemId">
+          <el-input
+            v-model="sendItemParam.queryParams.itemId"
+            placeholder="请输入物资ID"
+            clearable
+            size="small"
+            @keyup.enter.native="itemHandleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="物资类型" prop="itemType">
+          <el-select v-model="sendItemParam.queryParams.itemType" placeholder="请选择物资类型" clearable size="small">
+            <el-option
+              v-for="dict in sendItemParam.itemTypeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="物资名称" prop="itemName">
+          <el-input
+            v-model="sendItemParam.queryParams.itemName"
+            placeholder="请输入物资名称"
+            clearable
+            size="small"
+            @keyup.enter.native="itemHandleQuery"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="cyan" icon="el-icon-search" size="mini" @click="itemHandleQuery">搜索</el-button>
+          <el-button icon="el-icon-refresh" size="mini" @click="itemResetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
+
+      <el-table v-loading="loading" :data="sendItemParam.xy_itemList">
+        <el-table-column label="物资ID" align="center" prop="itemId"/>
+        <el-table-column label="物资类型" align="center" prop="itemType" :formatter="itemTypeFormat"/>
+        <el-table-column label="物资名称" align="center" prop="itemName"/>
+        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-edit"
+              @click="cancelDialog(scope.row)"
+              v-hasPermi="['system:xy_item:edit']"
+            >发送
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <pagination
+        v-show="sendItemParam.total>0"
+        :total="sendItemParam.total"
+        :page.sync="sendItemParam.queryParams.pageNum"
+        :limit.sync="sendItemParam.queryParams.pageSize"
+        @pagination="getList"
+      />
+
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="banSendFuli">确 定</el-button>
+        <el-button @click="cancelDialog">取 消</el-button>
+      </div>
+    </el-dialog>
 
 
   </div>
@@ -215,12 +308,19 @@ import {
   ban_role_send_msg,
   ban_role_fh,
   addYb,
-  addYbTC
+  addYbTC,
+  addFuli
 } from "@/api/system/xy_role";
+import {listXy_item} from "@/api/system/xy_item";
 
 export default {
   name: "Xy_role",
   components: {},
+  props: {
+
+    account: ""
+  }
+  ,
   data() {
     return {
       // 遮罩层
@@ -258,7 +358,7 @@ export default {
         xyRoleType: null,
         xyRoleLevel: null,
         xyRoleLevelZs: null,
-        xyAccount: null,
+        xyAccount: this.account,
         p1: null,
         p2: null,
         p3: null,
@@ -287,12 +387,36 @@ export default {
         open: false,
         selectedRecharge: null
       },
+      addFuli: {
+        fuliOptions: [],
+        open: false,
+        selectedfuli: null
+      },
+      sendItemParam: {
+        // itemOptions: [],
+        open: false,
+        // 西游物资表格数据
+        xy_itemList: [],
+        //条数
+        total: 0,
+        queryParams: {
+          pageNum: 1,
+          pageSize: 10,
+          itemId: null,
+          itemType: null,
+          itemName: null
+        },
+        // 物资类型字典
+        itemTypeOptions: []
+        // selectedfuli: null
+      },
       // 表单参数
       form: {},
       // 表单校验
       rules: {}
     };
-  },
+  }
+  ,
   created() {
     this.getDicts("xy_role_type").then(response => {
       this.xy_role_options = response.data;
@@ -301,25 +425,55 @@ export default {
       this.addYBTC.rechargeOptions = response.data;
       this.addYBTC.selectedRecharge = this.addYBTC.rechargeOptions[0].dictValue
     });
+    this.getDicts("xy_fuli_id").then(response => {
+      this.addFuli.fuliOptions = response.data;
+      this.addFuli.selectedfuli = this.addFuli.fuliOptions[0].dictValue
+    });
+    this.getDicts("xy_item_type").then(response => {
+      this.sendItemParam.itemTypeOptions = response.data;
+    });
 
     this.getList();
-  },
+    this.getXyItemList();
+  }
+  ,
   methods: {
 
+    // 物资类型字典翻译
+    itemTypeFormat(row, column) {
+      return this.selectDictLabel(this.sendItemParam.itemTypeOptions, row.itemType);
+    }
+    ,
+    //发送充值福利
+    banSendFuli() {
+      if (this.addFuli.selectedfuli === '') return
+      this.loading = true;
+      var selectedValue = this.addFuli.fuliOptions[this.addFuli.selectedfuli - 1].dictValue;
+      console.log(selectedValue)
+
+      addFuli(this.roleId, selectedValue).then(response => {
+        this.msgSuccess("操作成功")
+        this.loading = false;
+        this.addFuli.open = false;
+        this.roleId = "";
+      });
+    }
+    ,
 
     //发送元宝套餐
     banSendYBTC() {
       if (this.addYBTC.selectedRecharge === '') return
       this.loading = true;
-      console.log(this.addYBTC.rechargeOptions[this.addYBTC.selectedRecharge-1].dictValue)
+      console.log(this.addYBTC.rechargeOptions[this.addYBTC.selectedRecharge - 1].dictValue)
 
-      addYbTC(this.roleId, this.addYBTC.rechargeOptions[this.addYBTC.selectedRecharge-1].dictValue).then(response => {
+      addYbTC(this.roleId, this.addYBTC.rechargeOptions[this.addYBTC.selectedRecharge - 1].dictValue).then(response => {
         this.msgSuccess("操作成功")
         this.loading = false;
         this.addYBTC.open = false;
         this.roleId = "";
       });
-    },
+    }
+    ,
 
     //发送元宝
     banSendYB() {
@@ -332,32 +486,52 @@ export default {
         this.addYB.number = 0;
         this.roleId = "";
       });
-    },
+    }
+    ,
+
+    /** 查询西游物资列表 */
+    getXyItemList() {
+      this.loading = true;
+      listXy_item(this.sendItemParam.queryParams).then(response => {
+        console.log(response.rows)
+        this.sendItemParam.xy_itemList = response.rows;
+        this.sendItemParam.total = response.total;
+        this.loading = false;
+      });
+    }
+    ,
     /** 查询西游角色列表 */
     getList() {
       this.loading = true;
       listXy_role(this.queryParams).then(response => {
         this.xy_roleList = response.rows;
+        console.log('角色数量：' + this.xy_roleList.length)
         this.total = response.total;
         this.loading = false;
       });
-    },
+    }
+    ,
     // 任务组名字典翻译
     formatRoleType(row) {
       return this.selectDictLabel(this.xy_role_options, row.xyRoleType);
-    },
+    }
+    ,
     // 取消按钮
     cancel() {
       this.open = false;
       this.reset();
-    },
+    }
+    ,
     //取消对话框
     cancelDialog() {
       this.banMsgInfo.open = false;
       this.banRoleParam.open = false;
       this.addYB.open = false;
       this.addYBTC.open = false;
-    },
+      this.addFuli.open = false;
+      this.sendItemParam.open = false;
+    }
+    ,
     // 表单重置
     reset() {
       this.form = {
@@ -369,29 +543,47 @@ export default {
         xyAccount: null
       };
       this.resetForm("form");
-    },
+    }
+    ,
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
       this.getList();
-    },
+    }
+    ,
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm("queryForm");
       this.handleQuery();
-    },
+    }
+    ,
+
+    /** 搜索按钮操作 */
+    itemHandleQuery() {
+      this.sendItemParam.queryParams.pageNum = 1;
+      this.getXyItemList();
+    }
+    ,
+    /** 重置按钮操作 */
+    itemResetQuery() {
+      this.resetForm("sendItemParam.queryForm");
+      this.itemHandleQuery();
+    }
+    ,
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.xyRoleId)
       this.single = selection.length !== 1
       this.multiple = !selection.length
-    },
+    }
+    ,
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
       this.open = true;
       this.title = "添加西游角色";
-    },
+    }
+    ,
     //编辑角色属性
     editRole(row) {
       this.reset();
@@ -401,7 +593,18 @@ export default {
         this.open = true;
         this.title = "修改角色属性";
       });
-    },
+    }
+    ,
+
+
+    //显示禁言对话框
+    sendItem(row) {
+      this.roleName = row.xyRoleName
+      this.roleId = row.xyRoleId
+      this.title = "发送物资";
+      this.sendItemParam.open = true;
+    }
+    ,
 
     //显示禁言对话框
     banSend(row) {
@@ -409,7 +612,8 @@ export default {
       this.roleId = row.xyRoleId
       this.title = "禁言";
       this.banMsgInfo.open = true
-    },
+    }
+    ,
 
     //调用禁言API
     banSendSub() {
@@ -422,7 +626,8 @@ export default {
         this.title = "";
       });
 
-    },
+    }
+    ,
 
 
     //显示封号对话框
@@ -431,7 +636,8 @@ export default {
       this.roleId = row.xyRoleId
       this.title = "封号";
       this.banRoleParam.open = true
-    },
+    }
+    ,
 
     //调用封号API
     banRoleFh() {
@@ -445,21 +651,27 @@ export default {
         this.roleId = "";
         this.title = "";
       });
-    },
+    }
+    ,
 
     addMonney(row) {
       this.addYB.open = true;
       this.roleId = row.xyRoleId
       this.title = "充值元宝";
-    },
+    }
+    ,
     addMonney2(row) {
       this.addYBTC.open = true;
       this.roleId = row.xyRoleId
       this.title = "充值套餐";
-    },
+    }
+    ,
     sendRank(row) {
-      console.log("发送福利")
-    },
+      this.addFuli.open = true;
+      this.roleId = row.xyRoleId
+      this.title = "发送福利";
+    }
+    ,
 
     /** 提交按钮 */
     submitForm() {
@@ -480,7 +692,8 @@ export default {
           }
         }
       });
-    },
+    }
+    ,
     /** 删除按钮操作 */
     handleDelete(row) {
       const xyRoleIds = row.xyRoleId || this.ids;
@@ -494,7 +707,8 @@ export default {
         this.getList();
         this.msgSuccess("删除成功");
       })
-    },
+    }
+    ,
     /** 导出按钮操作 */
     handleExport() {
       const queryParams = this.queryParams;
@@ -509,5 +723,6 @@ export default {
       })
     }
   }
-};
+}
+;
 </script>

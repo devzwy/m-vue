@@ -86,7 +86,7 @@
     </el-dialog>
 
     <!-- 添加或修改西游账号对话框 -->
-    <el-dialog :title="title" :visible.sync="open_xy_role" width="80%" append-to-body>
+    <el-dialog :title="title" center :visible.sync="open_xy_role" width="70%" append-to-body>
       <xyRole :account=this.queryParams.account></xyRole>
     </el-dialog>
 
@@ -194,6 +194,7 @@ export default {
     handleUpdate(row) {
       this.reset();
       this.open_xy_role = true
+      this.title = "角色信息"
       this.role_account = row.account || this.ids
     },
     /** 提交按钮 */

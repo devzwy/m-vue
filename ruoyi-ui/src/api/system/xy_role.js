@@ -75,6 +75,15 @@ export function addYbTC(xyRoleId,giftId) {
   })
 }
 
+
+// 福利套餐
+export function addFuli(xyRoleId,fuliId) {
+  return request({
+    url: '/system/xy_role/addFuli/' + xyRoleId+"/"+fuliId,
+    method: 'put'
+  })
+}
+
 // 导出西游角色
 export function exportXy_role(query) {
   return request({

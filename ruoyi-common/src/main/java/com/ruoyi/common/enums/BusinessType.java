@@ -78,6 +78,9 @@ public enum BusinessType
      */
     ADDYBTC,
 
-
+    /**
+     * 充值福利
+     */
+    ADDFuli,
 
 }
