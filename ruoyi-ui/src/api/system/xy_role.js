@@ -51,10 +51,26 @@ export function ban_role_send_msg(xyRoleId,time) {
   })
 }
 
-// 禁言西游角色
+// 封号
 export function ban_role_fh(xyRoleId,type) {
   return request({
     url: '/system/xy_role/ban_role_fh/' + xyRoleId+"/"+type,
+    method: 'put'
+  })
+}
+
+// 封号
+export function addYb(xyRoleId,number) {
+  return request({
+    url: '/system/xy_role/addYb/' + xyRoleId+"/"+number,
+    method: 'put'
+  })
+}
+
+// 充值套餐
+export function addYbTC(xyRoleId,giftId) {
+  return request({
+    url: '/system/xy_role/addYbTC/' + xyRoleId+"/"+giftId,
     method: 'put'
   })
 }

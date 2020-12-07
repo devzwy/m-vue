@@ -145,7 +145,7 @@
     </el-dialog>
 
     <!-- 禁言对话框 -->
-    <el-dialog :title="title" :visible.sync="showBanMsg" width="500px" append-to-body>
+    <el-dialog :title="title" :visible.sync="banMsgInfo.open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules">
 
         <el-form-item label="禁言时长(单位秒)" prop="xyRoleLevelZs">
@@ -155,21 +155,48 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="banSendSub">确 定</el-button>
-        <el-button @click="cancelBanMsgDialog">取 消</el-button>
+        <el-button @click="cancelDialog">取 消</el-button>
       </div>
     </el-dialog>
 
     <!-- fenghao对话框 -->
-    <el-dialog :title="title" :visible.sync="showBanRoleMsg" width="500px" append-to-body>
+    <el-dialog :title="title" :visible.sync="banRoleParam.open" width="500px" append-to-body>
       <label>状态：
-        <el-select v-model="banRoleType">
-          <el-option value="1">封禁</el-option>
-          <el-option value="0">解封</el-option>
+        <el-select v-model="banRoleParam.banType">
+          <el-option value="封禁">封禁</el-option>
+          <el-option value="解封">解封</el-option>
         </el-select>
       </label>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="banRoleFh">确 定</el-button>
-        <el-button @click="cancelBanMsgDialog">取 消</el-button>
+        <el-button @click="cancelDialog">取 消</el-button>
+      </div>
+    </el-dialog>
+
+
+    <!-- 充值元宝对话框 -->
+    <el-dialog :title="title" :visible.sync="addYB.open" width="500px" append-to-body>
+      <el-input v-model="addYB.number" placeholder="0"/>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="banSendYB">确 定</el-button>
+        <el-button @click="cancelDialog">取 消</el-button>
+      </div>
+    </el-dialog>
+
+
+    <!--    充值套餐选择-->
+    <el-dialog :title="title" :visible.sync="addYBTC.open" center width="500px" append-to-body>
+      <el-select style="width: 100%" v-model="addYBTC.selectedRecharge" placeholder="选择套餐" clearable size="small">
+        <el-option
+          v-for="dict in addYBTC.rechargeOptions"
+          :key="dict.dictValue"
+          :label="dict.dictLabel"
+          :value="dict.dictValue"
+        />
+      </el-select>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="banSendYBTC">确 定</el-button>
+        <el-button @click="cancelDialog">取 消</el-button>
       </div>
     </el-dialog>
 
@@ -186,7 +213,9 @@ import {
   updateXy_role,
   exportXy_role,
   ban_role_send_msg,
-  ban_role_fh
+  ban_role_fh,
+  addYb,
+  addYbTC
 } from "@/api/system/xy_role";
 
 export default {
@@ -211,14 +240,16 @@ export default {
       //角色类型字典
       xy_role_options: [],
       // 弹出层标题
+
       title: "",
 
-      banRoleType: "封禁",
-      // 是否显示弹出层
+      // 弹出层
       open: false,
-      //显示禁言
-      showBanMsg: false,
-      showBanRoleMsg: false,
+
+      roleName: null,
+
+      roleId: null,
+
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -233,10 +264,28 @@ export default {
         p3: null,
         p4: null,
       },
+      //禁言用户相关参数
       banMsgInfo: {
         bantime: 10000,
-        roleName: null,
-        roleId: null
+        open: false
+      },
+      //封号相关参数
+      banRoleParam: {
+        banType: "封禁",
+        open: false
+      },
+      //充值元宝参数
+      addYB: {
+        open: false,
+        number: 0,
+      },
+
+      //充值套餐参数
+      addYBTC: {
+        // 状态数据字典
+        rechargeOptions: [],
+        open: false,
+        selectedRecharge: null
       },
       // 表单参数
       form: {},
@@ -248,9 +297,42 @@ export default {
     this.getDicts("xy_role_type").then(response => {
       this.xy_role_options = response.data;
     });
+    this.getDicts("xy_recharge_id").then(response => {
+      this.addYBTC.rechargeOptions = response.data;
+      this.addYBTC.selectedRecharge = this.addYBTC.rechargeOptions[0].dictValue
+    });
+
     this.getList();
   },
   methods: {
+
+
+    //发送元宝套餐
+    banSendYBTC() {
+      if (this.addYBTC.selectedRecharge === '') return
+      this.loading = true;
+      console.log(this.addYBTC.rechargeOptions[this.addYBTC.selectedRecharge-1].dictValue)
+
+      addYbTC(this.roleId, this.addYBTC.rechargeOptions[this.addYBTC.selectedRecharge-1].dictValue).then(response => {
+        this.msgSuccess("操作成功")
+        this.loading = false;
+        this.addYBTC.open = false;
+        this.roleId = "";
+      });
+    },
+
+    //发送元宝
+    banSendYB() {
+      console.log("发送元宝")
+      this.loading = true;
+      addYb(this.roleId, this.addYB.number).then(response => {
+        this.msgSuccess("操作成功")
+        this.loading = false;
+        this.addYB.open = false;
+        this.addYB.number = 0;
+        this.roleId = "";
+      });
+    },
     /** 查询西游角色列表 */
     getList() {
       this.loading = true;
@@ -262,7 +344,6 @@ export default {
     },
     // 任务组名字典翻译
     formatRoleType(row) {
-      console.log(row)
       return this.selectDictLabel(this.xy_role_options, row.xyRoleType);
     },
     // 取消按钮
@@ -270,9 +351,12 @@ export default {
       this.open = false;
       this.reset();
     },
-    cancelBanMsgDialog() {
-      this.showBanMsg = false;
-      this.showBanRoleMsg = false;
+    //取消对话框
+    cancelDialog() {
+      this.banMsgInfo.open = false;
+      this.banRoleParam.open = false;
+      this.addYB.open = false;
+      this.addYBTC.open = false;
     },
     // 表单重置
     reset() {
@@ -308,19 +392,8 @@ export default {
       this.open = true;
       this.title = "添加西游角色";
     },
-    /** 修改按钮操作 */
-    // handleUpdate(row) {
-    //   this.reset();
-    //   const xyRoleId = row.xyRoleId || this.ids
-    //   getXy_role(xyRoleId).then(response => {
-    //     this.form = response.data;
-    //     this.open = true;
-    //     this.title = "修改西游角色";
-    //   });
-    // },
     //编辑角色属性
     editRole(row) {
-      console.log("修改属性")
       this.reset();
       const xyRoleId = row.xyRoleId || this.ids
       getXy_role(xyRoleId).then(response => {
@@ -329,33 +402,60 @@ export default {
         this.title = "修改角色属性";
       });
     },
+
+    //显示禁言对话框
     banSend(row) {
-      this.banMsgInfo.roleName = row.xyRoleName
-      this.banMsgInfo.roleId = row.xyRoleId
-      this.showBanMsg = true
+      this.roleName = row.xyRoleName
+      this.roleId = row.xyRoleId
+      this.title = "禁言";
+      this.banMsgInfo.open = true
     },
 
+    //调用禁言API
     banSendSub() {
-      ban_role_send_msg(this.banMsgInfo.roleId, this.banMsgInfo.bantime);
-      this.msgSuccess("操作成功")
-      this.showBanMsg = false;
+      this.loading = true;
+      ban_role_send_msg(this.roleId, this.banMsgInfo.bantime).then(response => {
+        this.msgSuccess("操作成功")
+        this.loading = false;
+        this.banMsgInfo.open = false;
+        this.roleId = "";
+        this.title = "";
+      });
+
     },
 
-    banRoleFh() {
-      ban_role_fh(this.banMsgInfo.roleId, this.banMsgInfo.bantime);
-      this.msgSuccess("操作成功")
-      this.showBanRoleMsg = false;
-    },
+
+    //显示封号对话框
     banRole(row) {
-      this.banMsgInfo.roleName = row.xyRoleName
-      this.banMsgInfo.roleId = row.xyRoleId
-      this.showBanRoleMsg = true
+      this.roleName = row.xyRoleName
+      this.roleId = row.xyRoleId
+      this.title = "封号";
+      this.banRoleParam.open = true
     },
+
+    //调用封号API
+    banRoleFh() {
+      this.loading = true;
+      ban_role_fh(this.roleId,
+        this.banRoleParam.banType === "封禁" ? 1 : 0
+      ).then(response => {
+        this.msgSuccess("操作成功")
+        this.loading = false;
+        this.banRoleParam.open = false;
+        this.roleId = "";
+        this.title = "";
+      });
+    },
+
     addMonney(row) {
-      console.log("充值元宝")
+      this.addYB.open = true;
+      this.roleId = row.xyRoleId
+      this.title = "充值元宝";
     },
     addMonney2(row) {
-      console.log("充值工具")
+      this.addYBTC.open = true;
+      this.roleId = row.xyRoleId
+      this.title = "充值套餐";
     },
     sendRank(row) {
       console.log("发送福利")

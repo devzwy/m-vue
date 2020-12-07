@@ -379,7 +379,7 @@ public class GMUtils {
             return 2;
         }
 
-        String cmd = "fenghao ";
+        String cmd = "fenghao";
 
         String state = "error";
 
@@ -398,7 +398,7 @@ public class GMUtils {
             state = HttpUtils.sendGet(this.ruoYiConfig.getGameAddress(), data);
         }
 
-        log.debug(StringUtils.format("禁言： 区服{}，玩家Id{}，禁言状态{}，返回状态{}", new Object[]{serverId, playerId, states, state}));
+        log.debug(StringUtils.format("封号： 区服{}，玩家Id{}，封号状态{}，返回状态{}", new Object[]{serverId, playerId, states, state}));
 
         if ((state.equals("OK")) || (state.equals("Ok")) || (state.equals("ok"))) {
 

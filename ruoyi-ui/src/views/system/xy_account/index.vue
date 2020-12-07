@@ -154,7 +154,6 @@ export default {
         this.total = response.total;
         this.loading = false;
         this.accountList = response.rows;
-        console.log(this.accountList)
       });
     },
     // 取消按钮

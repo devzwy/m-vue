@@ -62,4 +62,22 @@ public enum BusinessType
      */
     BANMSG,
 
+    /**
+     * 封号
+     */
+    BANROLE,
+
+    /**
+     * 充值元宝
+     */
+    ADDYB,
+
+
+    /**
+     * 充值元宝套餐
+     */
+    ADDYBTC,
+
+
+
 }

@@ -114,10 +114,32 @@ public class XyRoleController extends BaseController {
     /**
      * 封号
      */
-    @Log(title = "西游角色", businessType = BusinessType.BANMSG)
+    @Log(title = "西游角色", businessType = BusinessType.BANROLE)
     @PutMapping("/ban_role_fh/{xyRoleId}/{type}")
     public AjaxResult ban_role_fh(@PathVariable Long xyRoleId, @PathVariable int type) {
         return toAjax(gmUtils.fenghao(1, String.valueOf(xyRoleId), type));
     }
+
+    /**
+     * 充值元宝
+     */
+    @Log(title = "西游角色", businessType = BusinessType.ADDYB)
+    @PutMapping("/addYb/{xyRoleId}/{number}")
+    public AjaxResult addYb(@PathVariable Long xyRoleId, @PathVariable int number) {
+        return toAjax(gmUtils.Gold(1, String.valueOf(xyRoleId), number));
+    }
+
+    /**
+     * 充值元宝
+     */
+    @Log(title = "西游角色", businessType = BusinessType.ADDYBTC)
+    @PutMapping("/addYbTC/{xyRoleId}/{giftId}")
+    public AjaxResult addYbTC(@PathVariable Long xyRoleId, @PathVariable int giftId) {
+        return toAjax(gmUtils.Recharge(1, String.valueOf(xyRoleId), giftId));
+    }
+
+
+
+
 
 }
