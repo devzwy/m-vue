@@ -2,6 +2,7 @@ package com.ruoyi.system.service;
 
 import java.util.List;
 import com.ruoyi.system.domain.XyAccount;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 西游账号Service接口
@@ -17,7 +18,7 @@ public interface IXyAccountService
      * @param account 西游账号ID
      * @return 西游账号
      */
-    public XyAccount selectXyAccountById(String account);
+    public XyAccount selectXyAccountById(@Param("account") String account);
 
     /**
      * 查询西游账号列表

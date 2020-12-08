@@ -43,6 +43,15 @@ public interface IXyRoleService
      */
     public int updateXyRole(XyRole xyRole);
 
+
+    /**
+     * 修改西游角色 GM修改
+     *
+     * @param xyRole 西游角色
+     * @return 结果
+     */
+    public int updateXyRole2(XyRole xyRole);
+
     /**
      * 批量删除西游角色
      * 

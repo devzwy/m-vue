@@ -29,7 +29,7 @@ export function addXy_role(data) {
 // 修改西游角色
 export function updateXy_role(data) {
   return request({
-    url: '/system/xy_role',
+    url: '/system/xy_role/update',
     method: 'put',
     data: data
   })

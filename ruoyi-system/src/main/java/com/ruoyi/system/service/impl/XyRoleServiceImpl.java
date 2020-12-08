@@ -64,6 +64,17 @@ public class XyRoleServiceImpl implements IXyRoleService {
      */
     @Override
     public int updateXyRole(XyRole xyRole) {
+        return xyRoleMapper.updateXyRole(xyRole);
+    }
+
+    /**
+     * 修改西游角色 GM同步修改资料
+     *
+     * @param xyRole 西游角色
+     * @return 结果
+     */
+    @Override
+    public int updateXyRole2(XyRole xyRole) {
         gmUtils.setHeroPro(1, xyRole.getXyRoleLevel(), xyRole.getXyRoleLevelZs(), Long.valueOf(xyRole.getXyRoleId()));
         gmUtils.setHeroShuXing(1, Integer.valueOf(xyRole.getP1()),
                 Integer.valueOf(xyRole.getP2()),
@@ -72,6 +83,9 @@ public class XyRoleServiceImpl implements IXyRoleService {
                 xyRole.getXyRoleId());
         return xyRoleMapper.updateXyRole(xyRole);
     }
+
+
+
 
     /**
      * 批量删除西游角色

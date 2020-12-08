@@ -316,11 +316,7 @@ import {listXy_item} from "@/api/system/xy_item";
 export default {
   name: "Xy_role",
   components: {},
-  props: {
-
-    account: ""
-  }
-  ,
+  props: {account:null},
   data() {
     return {
       // 遮罩层
@@ -418,6 +414,7 @@ export default {
   }
   ,
   created() {
+    console.log('传入account:'+this.account)
     this.getDicts("xy_role_type").then(response => {
       this.xy_role_options = response.data;
     });

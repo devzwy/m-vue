@@ -47,11 +47,11 @@ public class XyAccountController extends BaseController {
     public TableDataInfo list(XyAccount xyAccount) {
         startPage();
         List<XyAccount> list = xyAccountService.selectXyAccountList(xyAccount);
-        for (int i = 0; i < list.size(); i++) {
-            XyRole xyRole = new XyRole();
-            xyRole.setXyAccount(list.get(i).getAccount());
-            list.get(i).setXyRoleNum(Long.valueOf(String.valueOf(xyRoleService.selectXyRoleList(xyRole).size())));
-        }
+//        for (int i = 0; i < list.size(); i++) {
+//            XyRole xyRole = new XyRole();
+//            xyRole.setXyAccount(list.get(i).getAccount());
+//            list.get(i).setXyRoleNum(Long.valueOf(String.valueOf(xyRoleService.selectXyRoleList(xyRole).size())));
+//        }
         return getDataTable(list);
     }
 

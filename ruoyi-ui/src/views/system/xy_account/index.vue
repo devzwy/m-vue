@@ -7,7 +7,7 @@
           placeholder="请输入账号"
           clearable
           size="small"
-          @keyup.enter.native="handleQuery"
+          @input="handleQuery"
         />
       </el-form-item>
       <el-form-item>
@@ -87,7 +87,7 @@
 
     <!-- 添加或修改西游账号对话框 -->
     <el-dialog :title="title" center :visible.sync="open_xy_role" width="70%" append-to-body>
-      <xyRole :account=this.queryParams.account></xyRole>
+      <xyRole :account=this.role_account></xyRole>
     </el-dialog>
 
 

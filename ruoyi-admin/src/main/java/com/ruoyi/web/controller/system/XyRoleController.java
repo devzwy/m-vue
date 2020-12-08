@@ -91,6 +91,18 @@ public class XyRoleController extends BaseController {
         return toAjax(xyRoleService.updateXyRole(xyRole));
     }
 
+
+    /**
+     * 修改西游角色
+     */
+    @PreAuthorize("@ss.hasPermi('system:xy_role:edit')")
+    @Log(title = "西游角色", businessType = BusinessType.UPDATE)
+    @PutMapping("/update")
+    public AjaxResult edit2(@RequestBody XyRole xyRole) {
+        return toAjax(xyRoleService.updateXyRole2(xyRole));
+    }
+
+
     /**
      * 删除西游角色
      */

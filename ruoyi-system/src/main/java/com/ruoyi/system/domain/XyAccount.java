@@ -1,5 +1,6 @@
 package com.ruoyi.system.domain;
 
+import io.lettuce.core.dynamic.annotation.Param;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -41,6 +42,7 @@ public class XyAccount extends BaseEntity
     {
         return xyRoleNum;
     }
+
 
     @Override
     public String toString() {
