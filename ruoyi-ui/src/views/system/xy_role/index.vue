@@ -26,22 +26,69 @@
 
     <el-table v-loading="loading" :data="xy_roleList" center @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="角色账号" align="center" prop="xyAccount"/>
-      <el-table-column label="角色ID" align="center" prop="xyRoleId"/>
-      <el-table-column label="角色名称" align="center" prop="xyRoleName"/>
-      <el-table-column label="角色等级" align="center" prop="xyRoleLevel"/>
-      <el-table-column label="角色转生等级" align="center" prop="xyRoleLevelZs"/>
-      <el-table-column label="角色类型" align="center" prop="xyRoleType" :formatter="formatRoleType"/>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="角色账号" width="200" align="center" prop="xyAccount"/>
+      <el-table-column label="角色ID" width="200" align="center" prop="xyRoleId"/>
+      <el-table-column label="角色名称" width="200" align="center" prop="xyRoleName"/>
+      <el-table-column label="角色等级" width="200" align="center" prop="xyRoleLevel"/>
+      <el-table-column label="角色转生等级" width="200" align="center" prop="xyRoleLevelZs"/>
+      <el-table-column label="角色类型" width="200" align="center" prop="xyRoleType" :formatter="formatRoleType"/>
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
+
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
+            icon="el-icon-present"
             @click="sendItem(scope.row)"
-            v-hasPermi="['system:xy_item:edit']"
+            v-hasPermi="['system:xy_role:edit']"
           >发送物资
           </el-button>
+
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-present"
+            @click="addMonney(scope.row)"
+            v-hasPermi="['system:xy_role:edit']"
+          >充值元宝
+          </el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-present"
+            @click="sendRank(scope.row)"
+            v-hasPermi="['system:xy_role:edit']"
+          >发送福利
+          </el-button>
+
+
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-thumb"
+            @click="addMonney2(scope.row)"
+            v-hasPermi="['system:xy_role:edit']"
+          >充值工具
+          </el-button>
+
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-ice-cream-round"
+            @click="banSend(scope.row)"
+            v-hasPermi="['system:xy_role:edit']"
+          >禁言角色
+          </el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-lock"
+            @click="banRole(scope.row)"
+            v-hasPermi="['system:xy_role:edit']"
+          >角色封号
+          </el-button>
+
+
           <el-button
             size="mini"
             type="text"
@@ -50,46 +97,7 @@
             v-hasPermi="['system:xy_role:edit']"
           >修改属性
           </el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="banSend(scope.row)"
-            v-hasPermi="['system:xy_role:edit']"
-          >禁言
-          </el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="banRole(scope.row)"
-            v-hasPermi="['system:xy_role:edit']"
-          >封号
-          </el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="addMonney(scope.row)"
-            v-hasPermi="['system:xy_role:edit']"
-          >充值元宝
-          </el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="addMonney2(scope.row)"
-            v-hasPermi="['system:xy_role:edit']"
-          >充值工具
-          </el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="sendRank(scope.row)"
-            v-hasPermi="['system:xy_role:edit']"
-          >发送福利
-          </el-button>
+
 
           <el-button
             size="mini"
@@ -97,8 +105,10 @@
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['system:xy_role:remove']"
-          >删除
+          >删除角色
           </el-button>
+
+
         </template>
       </el-table-column>
     </el-table>
@@ -271,8 +281,8 @@
               size="mini"
               type="text"
               icon="el-icon-edit"
-              @click="cancelDialog(scope.row)"
-              v-hasPermi="['system:xy_item:edit']"
+              @click="showSendItemDialog(scope.row)"
+              v-hasPermi="['system:xy_role:list']"
             >发送
             </el-button>
           </template>
@@ -286,9 +296,18 @@
         :limit.sync="sendItemParam.queryParams.pageSize"
         @pagination="getList"
       />
+    </el-dialog>
 
+
+    <el-dialog title="发送物资" :visible.sync="giftItem.open" center width="30%" append-to-body>
+
+      <el-form label-width="80px">
+        <el-form-item label="发送数量">
+          <el-input v-model="giftItem.itemNumber" placeholder="请输入发送数量"></el-input>
+        </el-form-item>
+      </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="banSendFuli">确 定</el-button>
+        <el-button type="primary" @click="sendGift">确 定</el-button>
         <el-button @click="cancelDialog">取 消</el-button>
       </div>
     </el-dialog>
@@ -312,11 +331,12 @@ import {
   addFuli
 } from "@/api/system/xy_role";
 import {listXy_item} from "@/api/system/xy_item";
+import {sendItems} from "@/api/system/xy_server";
 
 export default {
   name: "Xy_role",
   components: {},
-  props: {account:null},
+  props: {account: null},
   data() {
     return {
       // 遮罩层
@@ -345,6 +365,16 @@ export default {
       roleName: null,
 
       roleId: null,
+      giftItem: {
+        //是否显示对话框
+        open: false,
+        //物品ID
+        itemId: null,
+        //物品类型
+        itemType: null,
+        //物品数量
+        itemNumber: null
+      },
 
       // 查询参数
       queryParams: {
@@ -414,7 +444,7 @@ export default {
   }
   ,
   created() {
-    console.log('传入account:'+this.account)
+    console.log('传入account:' + this.account)
     this.getDicts("xy_role_type").then(response => {
       this.xy_role_options = response.data;
     });
@@ -435,6 +465,19 @@ export default {
   }
   ,
   methods: {
+    //发送补偿
+    sendGift() {
+      if (this.giftItem.itemNumber === '' || this.giftItem.itemNumber == null) {
+        this.$message.error("数量不能为空")
+        return;
+      }
+      this.loading = true
+      sendItems(this.roleId, this.giftItem.itemId, this.giftItem.itemNumber, this.giftItem.itemType).then(response => {
+        this.loading = false;
+        this.giftItem.open = false;
+        this.$message.success("发送成功")
+      });
+    },
 
     // 物资类型字典翻译
     itemTypeFormat(row, column) {
@@ -445,10 +488,10 @@ export default {
     banSendFuli() {
       if (this.addFuli.selectedfuli === '') return
       this.loading = true;
-      var selectedValue = this.addFuli.fuliOptions[this.addFuli.selectedfuli - 1].dictValue;
-      console.log(selectedValue)
+      // console.log('福利：'+this.addFuli.selectedfuli)
+      // var selectedValue = this.addFuli.fuliOptions[this.addFuli.selectedfuli - 1].dictValue;
 
-      addFuli(this.roleId, selectedValue).then(response => {
+      addFuli(this.roleId, this.addFuli.selectedfuli).then(response => {
         this.msgSuccess("操作成功")
         this.loading = false;
         this.addFuli.open = false;
@@ -461,9 +504,8 @@ export default {
     banSendYBTC() {
       if (this.addYBTC.selectedRecharge === '') return
       this.loading = true;
-      console.log(this.addYBTC.rechargeOptions[this.addYBTC.selectedRecharge - 1].dictValue)
 
-      addYbTC(this.roleId, this.addYBTC.rechargeOptions[this.addYBTC.selectedRecharge - 1].dictValue).then(response => {
+      addYbTC(this.roleId, this.addYBTC.selectedRecharge).then(response => {
         this.msgSuccess("操作成功")
         this.loading = false;
         this.addYBTC.open = false;
@@ -474,7 +516,6 @@ export default {
 
     //发送元宝
     banSendYB() {
-      console.log("发送元宝")
       this.loading = true;
       addYb(this.roleId, this.addYB.number).then(response => {
         this.msgSuccess("操作成功")
@@ -490,7 +531,6 @@ export default {
     getXyItemList() {
       this.loading = true;
       listXy_item(this.sendItemParam.queryParams).then(response => {
-        console.log(response.rows)
         this.sendItemParam.xy_itemList = response.rows;
         this.sendItemParam.total = response.total;
         this.loading = false;
@@ -527,6 +567,7 @@ export default {
       this.addYBTC.open = false;
       this.addFuli.open = false;
       this.sendItemParam.open = false;
+      this.giftItem.open = false;
     }
     ,
     // 表单重置
@@ -592,7 +633,11 @@ export default {
       });
     }
     ,
-
+    showSendItemDialog(row) {
+      this.giftItem.itemId = row.itemId;
+      this.giftItem.itemType = row.itemType;
+      this.giftItem.open = true;
+    },
 
     //显示禁言对话框
     sendItem(row) {

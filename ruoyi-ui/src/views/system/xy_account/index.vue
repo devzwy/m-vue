@@ -52,7 +52,7 @@
             icon="el-icon-info"
             v-show="scope.row.xyRoleNum>0"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['system:xy_role:list']"
+            v-hasPermi="['system:xy_role:query']"
           >查看角色
           </el-button>
           <el-button
@@ -86,7 +86,7 @@
     </el-dialog>
 
     <!-- 添加或修改西游账号对话框 -->
-    <el-dialog :title="title" center :visible.sync="open_xy_role" width="70%" append-to-body>
+    <el-dialog :title="title" center :visible.sync="open_xy_role" v-if="open_xy_role" width="80%" append-to-body>
       <xyRole :account=this.role_account></xyRole>
     </el-dialog>
 
@@ -193,9 +193,9 @@ export default {
     /** 查看角色按钮 */
     handleUpdate(row) {
       this.reset();
-      this.open_xy_role = true
-      this.title = "角色信息"
       this.role_account = row.account || this.ids
+      this.title = "角色信息"
+      this.open_xy_role = true
     },
     /** 提交按钮 */
     submitForm() {

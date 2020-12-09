@@ -28,6 +28,7 @@ public interface IXyAccountService
      */
     public List<XyAccount> selectXyAccountList(XyAccount xyAccount);
 
+
     /**
      * 新增西游账号
      *

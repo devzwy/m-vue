@@ -1,13 +1,13 @@
 # 项目相关配置
 ruoyi:
   # 名称
-  name: RuoYi
+  name: Pidan
   # 版本
-  version: 3.2.1
+  version: 0.0.1
   # 版权年份
   copyrightYear: 2020
   # 实例演示开关
-  demoEnabled: true
+  demoEnabled: false
   # 文件路径 示例（ Mac:/Users/zhaowenwen/Downloads/aaa/uploadPath，Linux配置 /home/web/uploadPath）
   profile: /opt/web/uploadPath
   # 获取ip地址开关

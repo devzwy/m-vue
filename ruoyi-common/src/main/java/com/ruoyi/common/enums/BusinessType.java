@@ -68,7 +68,7 @@ public enum BusinessType
     BANROLE,
 
     /**
-     * 充值元宝
+         * 充值元宝
      */
     ADDYB,
 
@@ -82,5 +82,18 @@ public enum BusinessType
      * 充值福利
      */
     ADDFuli,
+
+    //发布公告
+    SEND_NOTICE,
+
+    //发送全服福利
+    SEND_ALL_GIFT,
+
+    //发送物品
+    SEND_ITEM,
+
+
+
+
 
 }
